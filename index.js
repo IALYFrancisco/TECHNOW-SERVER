@@ -6,6 +6,11 @@ dotenv.config()
 
 const app = express()
 
+app.use((request, response, next) => {
+    response.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_ORIGIN)
+    next()
+})
+
 app.use('/', router)
 
 app.listen( process.env.APP_PORT, ()=>{
