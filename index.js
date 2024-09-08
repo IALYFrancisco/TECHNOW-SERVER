@@ -6,6 +6,8 @@ dotenv.config()
 
 const app = express()
 
+app.use(express.json())
+
 app.use((request, response, next) => {
     response.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_ORIGIN)
     next()
