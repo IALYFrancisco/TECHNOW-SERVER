@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import { router } from './src/routes/app.route.js'
+import { auth_routes } from './src/routes/Authentication.js'
 
 dotenv.config()
 
@@ -15,5 +16,6 @@ app.use((request, response, next) => {
 })
 
 app.use('/', router)
+app.use('/authentication', auth_routes)
 
 app.listen( process.env.APP_PORT, ()=>{ console.log(`The application is listening at ${process.env.APP_HOST}`) })
