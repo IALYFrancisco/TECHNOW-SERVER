@@ -38,7 +38,7 @@ export async function HashPassword(p){
     }
 }
 
-export async function GenerateToken(UID) {
+export async function GenerateAccessToken(UID) {
     try {
         let newAccessToken = await sign({ id: UID }, process.env.TOKENS_SECRET, { expiresIn: '15min' })
         return newAccessToken
@@ -47,5 +47,11 @@ export async function GenerateToken(UID) {
             message: "Error generating access token.",
             error: err
         })
+    }
+}
+
+export async function GenerateRefreshToken(UID){
+    try{
+        let newAccessToken
     }
 }
