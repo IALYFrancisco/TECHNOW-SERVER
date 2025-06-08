@@ -28,5 +28,11 @@ export async function Register(request, response){
 }
 
 export async function HashPassword(p){
-    let hash = bcrypt
+    try {
+        let hash = await bcrypt.hash(p, 10)
+        return hash
+    }catch(err){
+        console.log({message: "Error hashing password."})
+        return
+    }
 }
