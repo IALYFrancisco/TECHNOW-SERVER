@@ -29,8 +29,8 @@ export async function Register(request, response){
 
 export async function HashPassword(p){
     try {
-        let hash = await hash(p, 10)
-        return hash
+        let _hash = await hash(p, 10)
+        return _hash
     }catch(err){
         console.log({message: "Error hashing password."})
     }
