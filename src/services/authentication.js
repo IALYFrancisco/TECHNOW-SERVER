@@ -25,3 +25,7 @@ export async function Register(request, response){
         await disconnection()
     }
 }
+
+export async function HashPassword(p){
+    
+}
