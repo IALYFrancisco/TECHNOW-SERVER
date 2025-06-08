@@ -1,6 +1,6 @@
 import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
-import { hash } from 'bcrypt'
+import { compare, hash } from 'bcrypt'
 import { sign } from "jsonwebtoken";
 
 export async function Register(request, response){
@@ -34,7 +34,18 @@ async function Login(request, response) {
         await connection()
         let { email, password } = request.body
         user = await user.findOne({ email })
-        if(!user || !await )
+        if(!user || !await ComparePassword(password, user.password)){
+            return response.status(401).json({
+                message: "Invalid credentials",
+                status: 401
+            })
+        }
+        
+        let newAccessToken = await GenerateAccessToken(user._id)
+        let newRefreshToken = await GenerateRefreshToken(user._id)
+
+        
+
     }catch(err){
 
     }finally{
@@ -42,7 +53,7 @@ async function Login(request, response) {
     }
 }
 
-export async function HashPassword(p){
+async function HashPassword(p){
     try {
         let _hash = await hash(p, 10)
         return _hash
@@ -51,7 +62,19 @@ export async function HashPassword(p){
     }
 }
 
-export async function GenerateAccessToken(UID) {
+async function ComparePassword(pl, hd) {
+    try{
+        let result = await compare(pl, hd)
+        return result
+    }catch(err){
+        console.log({
+            message: "Error comparing password",
+            error: err
+        })
+    }
+}
+
+async function GenerateAccessToken(UID) {
     try {
         let newAccessToken = await sign({ id: UID }, process.env.TOKENS_SECRET, { expiresIn: '15min' })
         return newAccessToken
@@ -63,7 +86,7 @@ export async function GenerateAccessToken(UID) {
     }
 }
 
-export async function GenerateRefreshToken(UID){
+async function GenerateRefreshToken(UID){
     try{
         let newRefreshToken = await sign({ id: UID }, process.env.TOKENS_SECRET, { expiresIn: '7d' })
         return newRefreshToken
