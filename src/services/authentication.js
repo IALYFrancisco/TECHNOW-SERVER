@@ -38,6 +38,14 @@ export async function HashPassword(p){
     }
 }
 
-export async function GenerateAccessToken(user) {
-    
+export async function GenerateAccessToken(UID) {
+    try {
+        let newAccessToken = await sign({ id: UID }, process.env.TOKENS_SECRET, { expiresIn: '15min' })
+        return newAccessToken
+    }catch(err){
+        console.log({
+            message: "Error generating access token.",
+            error: err
+        })
+    }
 }
