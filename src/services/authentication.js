@@ -1,6 +1,6 @@
 import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
-import { bcrypt } from 'bcrypt'
+import { hash } from 'bcrypt'
 
 export async function Register(request, response){
     try {
@@ -29,7 +29,7 @@ export async function Register(request, response){
 
 export async function HashPassword(p){
     try {
-        let hash = await bcrypt.hash(p, 10)
+        let hash = await hash(p, 10)
         return hash
     }catch(err){
         console.log({message: "Error hashing password."})
