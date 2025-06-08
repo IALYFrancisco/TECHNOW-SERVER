@@ -1,5 +1,6 @@
 import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
+import { bcrypt } from 'bcrypt'
 
 export async function Register(request, response){
     try {
@@ -27,5 +28,5 @@ export async function Register(request, response){
 }
 
 export async function HashPassword(p){
-    
+    let hash = bcrypt
 }
