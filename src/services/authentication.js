@@ -29,6 +29,19 @@ export async function Register(request, response){
     }
 }
 
+async function Login(request, response) {
+    try {
+        await connection()
+        let { email, password } = request.body
+        user = await user.findOne({ email })
+        if(!user || !await )
+    }catch(err){
+
+    }finally{
+        await disconnection()
+    }
+}
+
 export async function HashPassword(p){
     try {
         let _hash = await hash(p, 10)
