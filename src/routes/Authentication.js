@@ -1,5 +1,5 @@
 import e from 'express'
-import { Register } from '../services/authentication.js'
+import { Login, Register } from '../services/authentication.js'
 
 export const auth_routes = e.Router()
 

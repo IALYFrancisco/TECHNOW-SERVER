@@ -30,7 +30,7 @@ export async function Register(request, response){
     }
 }
 
-async function Login(request, response) {
+export async function Login(request, response) {
     try {
         await connection()
         let { email, password } = request.body
