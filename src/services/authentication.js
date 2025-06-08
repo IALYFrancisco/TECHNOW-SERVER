@@ -1,6 +1,7 @@
 import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
 import { hash } from 'bcrypt'
+import { sign } from "jsonwebtoken";
 
 export async function Register(request, response){
     try {
@@ -35,4 +36,8 @@ export async function HashPassword(p){
     }catch(err){
         console.log({message: "Error hashing password."})
     }
+}
+
+export async function GenerateAccessToken(user) {
+    
 }
