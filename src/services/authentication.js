@@ -52,6 +52,12 @@ export async function GenerateAccessToken(UID) {
 
 export async function GenerateRefreshToken(UID){
     try{
-        let newAccessToken
+        let newRefreshToken = await sign({ id: UID }, process.env.TOKENS_SECRET, { expiresIn: '7d' })
+        return newRefreshToken
+    }catch(err){
+        console.log({
+            message: "Error generating refresh token.",
+            error: err
+        })
     }
 }
