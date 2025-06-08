@@ -1,3 +1,4 @@
+import { RefreshToken } from "../models/RefreshTokens.js";
 import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
 import { compare, hash } from 'bcrypt'
@@ -33,21 +34,42 @@ async function Login(request, response) {
     try {
         await connection()
         let { email, password } = request.body
-        user = await user.findOne({ email })
-        if(!user || !await ComparePassword(password, user.password)){
+        _user = await User.findOne({ email })
+        if(!_user || !await ComparePassword(password, _user.password)){
             return response.status(401).json({
                 message: "Invalid credentials",
                 status: 401
             })
         }
         
-        let newAccessToken = await GenerateAccessToken(user._id)
-        let newRefreshToken = await GenerateRefreshToken(user._id)
+        let newAccessToken = await GenerateAccessToken(_user._id)
+        let newRefreshToken = await GenerateRefreshToken(_user._id)
 
-        
+        let _newRefreshToken = RefreshToken({
+            user_id: _user._id,
+            refresh_token: newRefreshToken
+        })
+
+        await _newRefreshToken.save()
+
+        response.cookie('refreshToken', newRefreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict',
+            path: '/token'
+        })
+
+        response.status(200).json({
+            message: "User exist, he can connect.",
+            accessToken: newAccessToken,
+            user: _user
+        })
 
     }catch(err){
-
+        response.status(500).json({
+            message: "Error user login",
+            error: err
+        })
     }finally{
         await disconnection()
     }
