@@ -33,6 +33,5 @@ export async function HashPassword(p){
         return hash
     }catch(err){
         console.log({message: "Error hashing password."})
-        return
     }
 }
