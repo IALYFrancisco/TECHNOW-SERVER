@@ -4,6 +4,7 @@ import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
 import { compare, hash } from 'bcrypt'
 import verify from "jsonwebtoken/verify.js";
+import { disconnect } from "mongoose";
 
 export async function Register(request, response){
     try {
@@ -81,12 +82,21 @@ export async function Login(request, response) {
 }
 
 export async function Logout(request, response) {
-    let token = request.cookies.refreshToken
-    if(token){
-        await RefreshToken.deleteOne({ refreshToken: token })
+    console.log("Logout")
+    try{
+        await connection()
+        let token = request.cookies.refreshToken
+        console.log(token)
+        if(token){
+            await RefreshToken.deleteOne({ refresh_token: token })
+        }
+        response.clearCookie('refreshToken', { path: '/' })
+        response.status(204).end()
+    }catch(err){
+        console.log(err)
+    }finally{
+        await disconnection()
     }
-    response.clearCookie('refreshToken', { path: '/token' })
-    response.status(204).end()
 }
 
 async function HashPassword(p){
