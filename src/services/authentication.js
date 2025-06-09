@@ -65,6 +65,7 @@ export async function Login(request, response) {
 
         response.status(200).json({
             message: "User exist, he can connect.",
+            status: 200,
             accessToken: newAccessToken,
             user: _user
         })
