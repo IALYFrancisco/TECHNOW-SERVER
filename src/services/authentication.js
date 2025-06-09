@@ -2,7 +2,8 @@ import { RefreshToken } from "../models/RefreshTokens.js";
 import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
 import { compare, hash } from 'bcrypt'
-import sign, { verify } from "jsonwebtoken";
+import sign from "jsonwebtoken";
+import verify from "jsonwebtoken/verify.js";
 
 export async function Register(request, response){
     try {
@@ -120,7 +121,7 @@ async function GenerateRefreshToken(UID){
     }
 }
 
-export async function RefreshToken(request, response){
+export async function _RefreshToken(request, response){
     let token = request.cookies.refreshToken
 
     if (!token) return response.status(401).json({
