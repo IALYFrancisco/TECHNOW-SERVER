@@ -164,3 +164,20 @@ export async function _RefreshToken(request, response){
         })
     }
 }
+
+export function isAuthenticated(request, response, next){
+    let authHeader = request.headers['authorization']
+    let token = authHeader && authHeader.split(' ')[1]
+    if(!token) return response.status(401).json({
+        status: 401,
+        message: "You aren't authorized for this endpoint."
+    })
+    verify(token, process.env.TOKENS_SECRET, (err, user) => {
+        if (err) return response.status(403).json({
+            status: 403,
+            message: "Not authenticated."
+        })
+        request.user = user
+        next()
+    })
+}
