@@ -7,6 +7,6 @@ auth_routes.post('/register', Register)
 
 auth_routes.post('/login', Login)
 
-auth_routes.post('logout', Logout)
+auth_routes.post('/logout', Logout)
 
 auth_routes.post('/token', _RefreshToken)
