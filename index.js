@@ -1,13 +1,21 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import { router } from './src/routes/app.route.js'
+import { auth_routes } from './src/routes/Authentication.js'
 
 dotenv.config()
 
 const app = express()
 
-app.use('/', router)
+app.use(express.json())
 
-app.listen( process.env.APP_PORT, ()=>{
-    console.log(`http://127.0.0.1:${process.env.APP_PORT}`)
+app.use((request, response, next) => {
+    response.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_ORIGIN)
+    response.setHeader('Access-Control-Allow-Headers', process.env.ALLOWED_HEADERS_REQUEST)
+    next()
 })
+
+app.use('/', router)
+app.use('/authentication', auth_routes)
+
+app.listen( process.env.APP_PORT, ()=>{ console.log(`The application is listening at ${process.env.APP_HOST}`) })
