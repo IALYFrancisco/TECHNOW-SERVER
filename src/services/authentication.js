@@ -2,7 +2,7 @@ import { RefreshToken } from "../models/RefreshTokens.js";
 import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
 import { compare, hash } from 'bcrypt'
-import { sign } from "jsonwebtoken";
+import sign from "jsonwebtoken";
 
 export async function Register(request, response){
     try {
