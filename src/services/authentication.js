@@ -57,7 +57,7 @@ export async function Login(request, response) {
             httpOnly: true,
             secure: true,
             sameSite: 'Strict',
-            path: '/token'
+            path: '/'
         })
 
         response.status(200).json({
