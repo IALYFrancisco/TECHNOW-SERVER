@@ -2,7 +2,7 @@ import { RefreshToken } from "../models/RefreshTokens.js";
 import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
 import { compare, hash } from 'bcrypt'
-import sign from "jsonwebtoken";
+import sign, { verify } from "jsonwebtoken";
 
 export async function Register(request, response){
     try {
@@ -116,6 +116,50 @@ async function GenerateRefreshToken(UID){
         console.log({
             message: "Error generating refresh token.",
             error: err
+        })
+    }
+}
+
+export async function RefreshToken(request, response){
+    let token = request.cookies.refreshToken
+
+    if (!token) return response.status(401).json({
+        message: "You aren't authorized to refresh token.",
+        status: 401 
+    })
+
+    try {
+        let payload = await verify(token, process.env.TOKENS_SECRET)
+        let user = await User.findById(payload.id)
+        let rf = await RefreshToken.findOne({user_id: payload.id})
+
+        if(!user || rf !== token) {
+            return response.status(403).json({
+                message: "Ressource not found.",
+                status: 403
+            })
+        }
+
+        let newAccessToken = await GenerateAccessToken(user._id)
+        let newRefreshToken = await GenerateRefreshToken(user._id)
+
+        rf.refresh_token = newRefreshToken
+        await rf.save()
+
+        response.cookie('refreshToken', newRefreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict',
+            path: '/token'
+        })
+
+        response.status(201).json({
+            message: "Tokens refreshed successfully.",
+            status: 201
+        })
+    }catch(err){
+        response.status(403).json({
+            message: "You aren't authorized to refresh token."
         })
     }
 }
