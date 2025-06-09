@@ -1,8 +1,8 @@
+import sign from "jsonwebtoken/sign.js";
 import { RefreshToken } from "../models/RefreshTokens.js";
 import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
 import { compare, hash } from 'bcrypt'
-import sign from "jsonwebtoken";
 import verify from "jsonwebtoken/verify.js";
 
 export async function Register(request, response){
@@ -35,7 +35,7 @@ export async function Login(request, response) {
     try {
         await connection()
         let { email, password } = request.body
-        _user = await User.findOne({ email })
+        let _user = await User.findOne({ email: email })
         if(!_user || !await ComparePassword(password, _user.password)){
             return response.status(401).json({
                 message: "Invalid credentials",
