@@ -76,6 +76,15 @@ export async function Login(request, response) {
     }
 }
 
+export async function Logout(request, response) {
+    let token = request.cookies.refreshToken
+    if(token){
+        await RefreshToken.deleteOne({ refreshToken: token })
+    }
+    response.clearCookie('refreshToken', { path: '/token' })
+    response.status(204).end()
+}
+
 async function HashPassword(p){
     try {
         let _hash = await hash(p, 10)
