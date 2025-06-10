@@ -4,7 +4,6 @@ import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
 import { compare, hash } from 'bcrypt'
 import verify from "jsonwebtoken/verify.js";
-import { disconnect } from "mongoose";
 
 export async function Register(request, response){
     try {
@@ -61,6 +60,7 @@ export async function Login(request, response) {
             httpOnly: true,
             secure: true,
             sameSite: 'Strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
             path: '/'
         })
 
