@@ -149,6 +149,9 @@ async function VerifyTokens(token){
     if(result){
         return true
     }else{
+        console.log({
+            message: "Token invalid. May be expired or fake."
+        })
         return false
     }
 }
