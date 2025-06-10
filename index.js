@@ -12,6 +12,7 @@ app.use(express.json())
 app.use((request, response, next) => {
     response.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_ORIGIN)
     response.setHeader('Access-Control-Allow-Headers', process.env.ALLOWED_HEADERS_REQUEST)
+    response.setHeader('Access-Control-Allow-Credentials', true)
     next()
 })
 

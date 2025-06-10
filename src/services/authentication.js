@@ -60,6 +60,7 @@ export async function Login(request, response) {
             httpOnly: true,
             secure: true,
             sameSite: 'Strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
             path: '/'
         })
 
@@ -81,12 +82,21 @@ export async function Login(request, response) {
 }
 
 export async function Logout(request, response) {
-    let token = request.cookies.refreshToken
-    if(token){
-        await RefreshToken.deleteOne({ refreshToken: token })
+    console.log("Logout")
+    try{
+        await connection()
+        let token = request.cookies.refreshToken
+        console.log(token)
+        if(token){
+            await RefreshToken.deleteOne({ refresh_token: token })
+        }
+        response.clearCookie('refreshToken', { path: '/' })
+        response.status(204).end()
+    }catch(err){
+        console.log(err)
+    }finally{
+        await disconnection()
     }
-    response.clearCookie('refreshToken', { path: '/token' })
-    response.status(204).end()
 }
 
 async function HashPassword(p){
@@ -131,6 +141,18 @@ async function GenerateRefreshToken(UID){
             message: "Error generating refresh token.",
             error: err
         })
+    }
+}
+
+async function VerifyTokens(token){
+    let result = await verify(token, process.env.TOKENS_SECRET)
+    if(result){
+        return true
+    }else{
+        console.log({
+            message: "Token invalid. May be expired or fake."
+        })
+        return false
     }
 }
 
