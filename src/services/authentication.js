@@ -144,6 +144,15 @@ async function GenerateRefreshToken(UID){
     }
 }
 
+async function VerifyTokens(token){
+    let result = await verify(token, process.env.TOKENS_SECRET)
+    if(result){
+        return true
+    }else{
+        return false
+    }
+}
+
 export async function _RefreshToken(request, response){
     let token = request.cookies.refreshToken
 
