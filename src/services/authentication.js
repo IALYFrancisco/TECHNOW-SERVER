@@ -19,8 +19,7 @@ export async function Register(request, response){
                 newUser.password = await HashPassword(newUser.password)
                 let result = await newUser.save()
                 if (result) response.status(201).json({
-                    message: "User registered successfully.",
-                    status: 201
+                    message: "User registered successfully."
                 })
             }
         }
