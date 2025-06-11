@@ -2,12 +2,15 @@ import express from 'express'
 import dotenv from 'dotenv'
 import { router } from './src/routes/app.route.js'
 import { auth_routes } from './src/routes/Authentication.js'
+import cookieParser from 'cookie-parser'
 
 dotenv.config()
 
 const app = express()
 
 app.use(express.json())
+
+app.use(cookieParser())
 
 app.use((request, response, next) => {
     response.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_ORIGIN)
