@@ -145,7 +145,7 @@ export async function _RefreshToken(request, response){
     let token = request.cookies.refreshToken
 
     if (!token) return response.status(401).json({
-        message: "You aren't authorized to refresh token."
+        message: "You aren't authorized to refresh token. No refresh token provided."
     })
 
     try {
