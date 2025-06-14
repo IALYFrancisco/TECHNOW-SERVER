@@ -204,9 +204,12 @@ export function isAuthenticated(request, response, next){
         message: "No access token provided."
     })
     verify(token, process.env.TOKENS_SECRET, (err, user) => {
-        if (err) return response.status(403).json({
-            message: "Not authenticated."
-        })
+        if(err){
+            if (err.name === 'TokenExpiredError'){
+                return response.status(403).json({ message: "Access token expired." })
+            }
+            return response.status(403).json({ message: "Access token isn't valid." })
+        }
         request.user = user
         next()
     })
