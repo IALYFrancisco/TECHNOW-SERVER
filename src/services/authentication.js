@@ -204,7 +204,6 @@ export function isAuthenticated(request, response, next){
         message: "No access token provided."
     })
     verify(token, process.env.TOKENS_SECRET, (err, user) => {
-        console.log({user: user, error: err})
         if (err) return response.status(403).json({
             message: "Not authenticated."
         })
