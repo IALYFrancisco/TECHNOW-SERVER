@@ -149,37 +149,31 @@ export async function _RefreshToken(request, response){
     })
 
     try {
-        let payload = await verify(token, process.env.TOKENS_SECRET)
-        let user = await User.findById(payload.id)
-        let rf = await RefreshToken.findOne({user_id: payload.id})
-
-        if(!user || rf !== token) {
-            return response.status(403).json({
-                message: "Ressource not found.",
-                status: 403
+        
+        verify(token, process.env.TOKENS_SECRET, async (error, user) => {
+            if(error){
+                if (error.name === 'TokenExpiredError'){
+                    return response.status(403).json({ message: "Refresh token expired." })
+                }
+                return response.status(403).json({ message: "Refresh token isn't valid." })
+            }
+            let newAccessToken = await GenerateAccessToken(user._id)
+            let newRefreshToken = await GenerateRefreshToken(user._id)
+            response.cookie('refreshToken', newRefreshToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'Strict',
+                path: '/'
             })
-        }
-
-        let newAccessToken = await GenerateAccessToken(user._id)
-        let newRefreshToken = await GenerateRefreshToken(user._id)
-
-        rf.refresh_token = newRefreshToken
-        await rf.save()
-
-        response.cookie('refreshToken', newRefreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'Strict',
-            path: '/token'
+            response.status(201).json({
+                message: "Tokens refreshed successfully.",
+                accessToken: newAccessToken
+            })
         })
 
-        response.status(201).json({
-            message: "Tokens refreshed successfully.",
-            status: 201
-        })
     }catch(err){
-        response.status(403).json({
-            message: "You aren't authorized to refresh token."
+        response.status(500).json({
+            message: "Error refreshing tokens. May be server error."
         })
     }
 }
