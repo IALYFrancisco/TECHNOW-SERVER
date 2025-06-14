@@ -47,13 +47,6 @@ export async function Login(request, response) {
         let newAccessToken = await GenerateAccessToken(_user._id)
         let newRefreshToken = await GenerateRefreshToken(_user._id)
 
-        let _newRefreshToken = RefreshToken({
-            user_id: _user._id,
-            refresh_token: newRefreshToken
-        })
-
-        await _newRefreshToken.save()
-
         response.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
             secure: true,
