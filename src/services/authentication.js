@@ -204,6 +204,7 @@ export function isAuthenticated(request, response, next){
         message: "You aren't authorized for this endpoint."
     })
     verify(token, process.env.TOKENS_SECRET, (err, user) => {
+        console.log({user: user, error: err})
         if (err) return response.status(403).json({
             message: "Not authenticated."
         })
