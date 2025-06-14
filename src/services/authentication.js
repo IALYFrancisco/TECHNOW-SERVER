@@ -40,8 +40,7 @@ export async function Login(request, response) {
         let _user = await User.findOne({ email: email })
         if(!_user || !await ComparePassword(password, _user.password)){
             return response.status(401).json({
-                message: "Invalid credentials",
-                status: 401
+                message: "Invalid credentials"
             })
         }
         
