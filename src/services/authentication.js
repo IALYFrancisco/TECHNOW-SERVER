@@ -201,7 +201,7 @@ export function isAuthenticated(request, response, next){
     let authHeader = request.headers['authorization']
     let token = authHeader && authHeader.split(' ')[1]
     if(!token) return response.status(401).json({
-        message: "You aren't authorized for this endpoint."
+        message: "No access token provided."
     })
     verify(token, process.env.TOKENS_SECRET, (err, user) => {
         console.log({user: user, error: err})
