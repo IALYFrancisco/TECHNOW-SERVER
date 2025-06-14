@@ -1,5 +1,5 @@
 import e from 'express'
-import { Pay } from '../services/payment'
+import { Pay } from '../services/payment.js'
 
 export const payment_routes = e.Router()
 
