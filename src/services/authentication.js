@@ -155,6 +155,7 @@ export async function _RefreshToken(request, response){
                 httpOnly: true,
                 secure: true,
                 sameSite: 'Strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
                 path: '/'
             })
             response.status(201).json({
