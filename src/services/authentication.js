@@ -205,7 +205,6 @@ export function isAuthenticated(request, response, next){
     })
     verify(token, process.env.TOKENS_SECRET, (err, user) => {
         if (err) return response.status(403).json({
-            status: 403,
             message: "Not authenticated."
         })
         request.user = user
