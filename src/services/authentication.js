@@ -1,5 +1,4 @@
 import sign from "jsonwebtoken/sign.js";
-import { RefreshToken } from "../models/RefreshTokens.js";
 import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
 import { compare, hash } from 'bcrypt'
