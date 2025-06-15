@@ -9,4 +9,4 @@ auth_routes.post('/login', Login)
 
 auth_routes.post('/logout', Logout)
 
-auth_routes.post('/token', _RefreshToken)
+auth_routes.post('/token/refresh', _RefreshToken)
