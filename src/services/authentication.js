@@ -169,8 +169,8 @@ export async function _RefreshToken(request, response){
     }
 }
 
-async function VerifyToken(request, response){
-    
+export async function VerifyToken(request, response){
+
 }
 
 export function isAuthenticated(request, response, next){
