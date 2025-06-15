@@ -169,6 +169,10 @@ export async function _RefreshToken(request, response){
     }
 }
 
+async function VerifyToken(request, response){
+    
+}
+
 export function isAuthenticated(request, response, next){
     let authHeader = request.headers['authorization']
     let token = authHeader && authHeader.split(' ')[1]
