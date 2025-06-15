@@ -169,54 +169,6 @@ export async function _RefreshToken(request, response){
     }
 }
 
-export function VerifyToken(request, response){
-    let at = request.body.accessToken
-    if(!at) {
-        let rt = request.cookies.refreshToken
-        if(!rt){
-            return response.status(403).json({ message: "Refresh token not provided." })
-        }
-        verify(rt, process.env.TOKENS_SECRET, async (err, user) => {
-            if(err){
-                return response.status(403).json({ message: "Refresh token isn't valid." })
-            }
-            let newAccessToken = await GenerateAccessToken(user._id)
-            let newRefreshToken = await GenerateRefreshToken(user._id)
-            response.cookie('refreshToken', newRefreshToken, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'Strict',
-                path: '/',
-                maxAge: 7 * 24 * 60 * 60 * 1000
-            })
-            response.status(201).json({ message: "Tokens refreshed.", accessToken: newAccessToken })
-        })
-    }
-    verify(at, process.env.TOKENS_SECRET, (err, user) => {
-        if(err){
-            let rt = request.cookies.refreshToken
-            if(!rt){
-                return response.status(403).json({ message: "Refresh token not provided." })
-            }
-            verify(rt, process.env.TOKENS_SECRET, async (err, user) => {
-                if(err){
-                    return response.status(403).json({ message: "Refresh token isn't valid." })
-                }
-                let newAccessToken = await GenerateAccessToken(user._id)
-                let newRefreshToken = await GenerateRefreshToken(user._id)
-                response.cookie('refreshToken', newRefreshToken, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: 'Strict',
-                    path: '/',
-                    maxAge: 7 * 24 * 60 * 60 * 1000
-                })
-                response.status(201).json({ message: "Tokens refreshed.", accessToken: newAccessToken })
-            })
-        }
-    })
-}
-
 export function isAuthenticated(request, response, next){
     let authHeader = request.headers['authorization']
     let token = authHeader && authHeader.split(' ')[1]
