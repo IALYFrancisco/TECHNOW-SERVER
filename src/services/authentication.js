@@ -170,7 +170,11 @@ export async function _RefreshToken(request, response){
 }
 
 export async function VerifyToken(request, response){
-
+    try {
+        
+    }catch(err){
+        response.status(500).json({ message: 'error tokens verification.', error: err })
+    }
 }
 
 export function isAuthenticated(request, response, next){
