@@ -171,7 +171,28 @@ export async function _RefreshToken(request, response){
 
 export async function VerifyToken(request, response){
     try {
-        
+        let at = request.body.accessToken
+        verify(at, process.env.TOKENS_SECRET, (err, user) => {
+            if(err){
+                let rt = request.cookies.refreshToken
+                verify(rt, process.env.TOKENS_SECRET, async (err, user) => {
+                    if(err){
+                        return response.status(403).json({ message: "Refresh token isn't valid." })   
+                    }
+                    let newRefreshToken = await GenerateRefreshToken()
+                    let newAccessToken = await GenerateAccessToken()
+                    response.cookie('refreshToken', newRefreshToken, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: 'Strict',
+                        path: '/',
+                        maxAge: 7 * 24 * 60 * 60 * 1000
+                    })
+                    return response.status(201).json({ message: "Tokens refreshd", accessToken: newAccessToken })
+                })
+            }
+            return response.status(200).json({ message: "Token valid." })
+        })
     }catch(err){
         response.status(500).json({ message: 'error tokens verification.', error: err })
     }
