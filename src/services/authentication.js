@@ -170,7 +170,7 @@ export async function _RefreshToken(request, response){
 }
 
 export function VerifyToken(request, response){
-    
+    console.log(request)
 }
 
 export function isAuthenticated(request, response, next){
