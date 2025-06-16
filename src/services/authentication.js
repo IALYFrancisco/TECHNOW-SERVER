@@ -1,5 +1,4 @@
 import sign from "jsonwebtoken/sign.js";
-import { RefreshToken } from "../models/RefreshTokens.js";
 import { User } from "../models/User.js";
 import { connection, disconnection } from "./db.js";
 import { compare, hash } from 'bcrypt'
@@ -40,20 +39,12 @@ export async function Login(request, response) {
         let _user = await User.findOne({ email: email })
         if(!_user || !await ComparePassword(password, _user.password)){
             return response.status(401).json({
-                message: "Invalid credentials",
-                status: 401
+                message: "Invalid credentials"
             })
         }
         
         let newAccessToken = await GenerateAccessToken(_user._id)
         let newRefreshToken = await GenerateRefreshToken(_user._id)
-
-        let _newRefreshToken = RefreshToken({
-            user_id: _user._id,
-            refresh_token: newRefreshToken
-        })
-
-        await _newRefreshToken.save()
 
         response.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
@@ -65,7 +56,6 @@ export async function Login(request, response) {
 
         response.status(200).json({
             message: "User exist, he can connect.",
-            status: 200,
             accessToken: newAccessToken,
             user: _user
         })
@@ -141,58 +131,40 @@ async function GenerateRefreshToken(UID){
     }
 }
 
-async function VerifyTokens(token){
-    let result = await verify(token, process.env.TOKENS_SECRET)
-    if(result){
-        return true
-    }else{
-        console.log({
-            message: "Token invalid. May be expired or fake."
-        })
-        return false
-    }
-}
-
 export async function _RefreshToken(request, response){
     let token = request.cookies.refreshToken
 
     if (!token) return response.status(401).json({
-        message: "You aren't authorized to refresh token.",
-        status: 401 
+        message: "You aren't authorized to refresh token. No refresh token provided."
     })
 
     try {
-        let payload = await verify(token, process.env.TOKENS_SECRET)
-        let user = await User.findById(payload.id)
-        let rf = await RefreshToken.findOne({user_id: payload.id})
-
-        if(!user || rf !== token) {
-            return response.status(403).json({
-                message: "Ressource not found.",
-                status: 403
+        
+        verify(token, process.env.TOKENS_SECRET, async (error, user) => {
+            if(error){
+                if (error.name === 'TokenExpiredError'){
+                    return response.status(403).json({ message: "Refresh token expired." })
+                }
+                return response.status(403).json({ message: "Refresh token isn't valid." })
+            }
+            let newAccessToken = await GenerateAccessToken(user._id)
+            let newRefreshToken = await GenerateRefreshToken(user._id)
+            response.cookie('refreshToken', newRefreshToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'Strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                path: '/'
             })
-        }
-
-        let newAccessToken = await GenerateAccessToken(user._id)
-        let newRefreshToken = await GenerateRefreshToken(user._id)
-
-        rf.refresh_token = newRefreshToken
-        await rf.save()
-
-        response.cookie('refreshToken', newRefreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'Strict',
-            path: '/token'
+            response.status(201).json({
+                message: "Tokens refreshed successfully.",
+                accessToken: newAccessToken
+            })
         })
 
-        response.status(201).json({
-            message: "Tokens refreshed successfully.",
-            status: 201
-        })
     }catch(err){
-        response.status(403).json({
-            message: "You aren't authorized to refresh token."
+        response.status(500).json({
+            message: "Error refreshing tokens. May be server error."
         })
     }
 }
@@ -201,13 +173,15 @@ export function isAuthenticated(request, response, next){
     let authHeader = request.headers['authorization']
     let token = authHeader && authHeader.split(' ')[1]
     if(!token) return response.status(401).json({
-        message: "You aren't authorized for this endpoint."
+        message: "No access token provided."
     })
     verify(token, process.env.TOKENS_SECRET, (err, user) => {
-        console.log({user: user, error: err})
-        if (err) return response.status(403).json({
-            message: "Not authenticated."
-        })
+        if(err){
+            if (err.name === 'TokenExpiredError'){
+                return response.status(403).json({ message: "Access token expired." })
+            }
+            return response.status(403).json({ message: "Access token isn't valid." })
+        }
         request.user = user
         next()
     })
