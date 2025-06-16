@@ -72,17 +72,11 @@ export async function Login(request, response) {
 
 export async function Logout(request, response) {
     try{
-        await connection()
         let token = request.cookies.refreshToken
-        if(token){
-            await RefreshToken.deleteOne({ refresh_token: token })
-        }
         response.clearCookie('refreshToken', { path: '/' })
         response.status(204).end()
     }catch(err){
         console.log(err)
-    }finally{
-        await disconnection()
     }
 }
 
