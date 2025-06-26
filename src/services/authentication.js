@@ -72,7 +72,6 @@ export async function Login(request, response) {
 
 export async function Logout(request, response) {
     try{
-        let token = request.cookies.refreshToken
         response.clearCookie('refreshToken', { path: '/' })
         response.status(204).end()
     }catch(err){
