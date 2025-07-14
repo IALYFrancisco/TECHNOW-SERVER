@@ -1,4 +1,5 @@
-import { productsModel } from '../models/Product.js'
+
+import { Product } from '../models/Product.js'
 import { disconnection } from '../services/db.js'
 
 export function root(request,response) {
@@ -9,7 +10,7 @@ export async function addProduct(request, response){
 
     await disconnection()
 
-    let productCollection = new productsModel(request.body)
+    let productCollection = new Product(request.body)
 
     await productCollection.save()
 
