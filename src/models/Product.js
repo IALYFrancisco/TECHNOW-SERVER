@@ -12,4 +12,4 @@ const productSchema = new Schema({
     add_date: { type: Date, required: true, default: Date.now }
 })
 
-export const productsModel = new mongoose.model('Products', productSchema)
+export const Product = new mongoose.model('Products', productSchema)
