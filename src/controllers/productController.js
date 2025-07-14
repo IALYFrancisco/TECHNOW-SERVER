@@ -1,4 +1,4 @@
-import { productsModel } from '../models/product.model.js'
+import { productsModel } from '../models/Product.js'
 import { disconnection } from '../services/db.js'
 
 export function root(request,response) {
