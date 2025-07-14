@@ -4,6 +4,7 @@ import { router } from './src/routes/app.route.js'
 import { auth_routes } from './src/routes/Authentication.js'
 import cookieParser from 'cookie-parser'
 import { payment_routes } from './src/routes/Payment.js'
+import { product_router } from './src/routes/Product.js'
 
 dotenv.config()
 
@@ -25,5 +26,7 @@ app.use('/', router)
 app.use('/authentication', auth_routes)
 
 app.use('/payment', payment_routes)
+
+app.use('/product', product_router)
 
 app.listen( process.env.APP_PORT, ()=>{ console.log(`The application is listening at ${process.env.APP_HOST}`) })
