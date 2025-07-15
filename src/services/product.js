@@ -16,8 +16,14 @@ export async function GetProduct(request, response) {
 export async function AddProduct(request, response) {
     try{
         await connection()
+        let newProduct = Product(request.body)
+        await newProduct.save()
+        response.status(201).json("New product added.")
     }catch(err){
-
+        response.status(500).json({
+            message: "Error adding new product, maybe error server.",
+            error: err
+    })
     }finally{
         await disconnection()
     }
