@@ -8,7 +8,7 @@ const productSchema = new Schema({
     color: { type:String, required:true},
     description: { type:String, required:true},
     stock: { type:String, required: true},
-    image_file_url: { type:String, required: true},
+    image: { type:String, required: true},
     add_date: { type: Date, required: true, default: Date.now }
 })
 
