@@ -12,3 +12,13 @@ export async function GetProduct(request, response) {
         await disconnection()
     }
 }
+
+export async function AddProduct(request, response) {
+    try{
+        await connection()
+    }catch(err){
+
+    }finally{
+        await disconnection()
+    }
+}
