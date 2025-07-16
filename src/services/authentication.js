@@ -38,9 +38,7 @@ export async function Login(request, response) {
         let { email, password } = request.body
         let _user = await User.findOne({ email: email })
         if(!_user || !await ComparePassword(password, _user.password)){
-            return response.status(401).json({
-                message: "Invalid credentials"
-            })
+            return response.status(204)
         }
         
         let newAccessToken = await GenerateAccessToken(_user._id)
