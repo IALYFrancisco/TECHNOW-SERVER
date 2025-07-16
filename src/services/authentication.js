@@ -38,7 +38,7 @@ export async function Login(request, response) {
         let { email, password } = request.body
         let _user = await User.findOne({ email: email })
         if(!_user || !await ComparePassword(password, _user.password)){
-            return response.status(204)
+            return response.status(204).end()
         }
         
         let newAccessToken = await GenerateAccessToken(_user._id)
@@ -53,7 +53,6 @@ export async function Login(request, response) {
         })
 
         response.status(200).json({
-            message: "User exist, he can connect.",
             accessToken: newAccessToken,
             user: _user
         })
