@@ -69,7 +69,12 @@ export async function Login(request, response) {
 
 export async function Logout(request, response) {
     try{
-        response.clearCookie('refreshToken')
+        response.clearCookie('refreshToken', {
+          httpOnly: true,
+          secure: process.env.APP_ENV,
+          sameSite: process.env.APP_ENV ? 'none' : 'lax',
+          path: '/',
+        })
         response.status(204).end()
     }catch(err){
         console.log(err)
