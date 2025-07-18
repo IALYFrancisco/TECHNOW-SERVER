@@ -69,7 +69,7 @@ export async function Login(request, response) {
 
 export async function Logout(request, response) {
     try{
-        response.clearCookie('refreshToken', { path: '/' })
+        response.clearCookie('refreshToken')
         response.status(204).end()
     }catch(err){
         console.log(err)
