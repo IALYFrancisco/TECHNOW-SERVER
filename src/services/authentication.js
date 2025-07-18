@@ -38,9 +38,7 @@ export async function Login(request, response) {
         let { email, password } = request.body
         let _user = await User.findOne({ email: email })
         if(!_user || !await ComparePassword(password, _user.password)){
-            return response.status(401).json({
-                message: "Invalid credentials"
-            })
+            return response.status(204).end()
         }
         
         let newAccessToken = await GenerateAccessToken(_user._id)
@@ -55,7 +53,6 @@ export async function Login(request, response) {
         })
 
         response.status(200).json({
-            message: "User exist, he can connect.",
             accessToken: newAccessToken,
             user: _user
         })
@@ -127,9 +124,7 @@ async function GenerateRefreshToken(UID){
 export async function _RefreshToken(request, response){
     let token = request.cookies.refreshToken
 
-    if (!token) return response.status(401).json({
-        message: "You aren't authorized to refresh token. No refresh token provided."
-    })
+    if (!token) return response.status(204).end()
 
     try {
         
