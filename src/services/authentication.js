@@ -44,12 +44,10 @@ export async function Login(request, response) {
         let newAccessToken = await GenerateAccessToken(_user._id)
         let newRefreshToken = await GenerateRefreshToken(_user._id)
 
-        let isProduction = process.env.APP_ENV === 'production'
-
         response.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
+            secure: process.env.APP_ENV,
+            sameSite: process.env.APP_ENV ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000,
             path: '/'
         })
