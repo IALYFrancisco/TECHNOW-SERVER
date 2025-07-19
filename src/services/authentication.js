@@ -46,8 +46,8 @@ export async function Login(request, response) {
 
         response.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
-            secure: process.env.APP_ENV,
-            sameSite: process.env.APP_ENV ? 'none' : 'lax',
+            secure: JSON.parse(process.env.APP_ENV),
+            sameSite: JSON.parse(process.env.APP_ENV) ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000,
             path: '/'
         })
@@ -71,8 +71,8 @@ export async function Logout(request, response) {
     try{
         response.clearCookie('refreshToken', {
           httpOnly: true,
-          secure: process.env.APP_ENV,
-          sameSite: process.env.APP_ENV ? 'none' : 'lax',
+          secure: JSON.parse(process.env.APP_ENV),
+          sameSite: JSON.parse(process.env.APP_ENV) ? 'none' : 'lax',
           path: '/',
         })
         response.status(204).end()
@@ -144,8 +144,8 @@ export async function _RefreshToken(request, response){
             let newRefreshToken = await GenerateRefreshToken(user._id)
             response.cookie('refreshToken', newRefreshToken, {
                 httpOnly: true,
-                secure: true,
-                sameSite: 'Strict',
+                secure: JSON.parse(process.env.APP_ENV),
+                sameSite: JSON.parse(process.env.APP_ENV) ? 'none' : 'lax',
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 path: '/'
             })
