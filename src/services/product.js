@@ -19,6 +19,16 @@ const Upload = multer({
     limits: { fileSize: 15 * 1024 * 1024 }
 })
 
+export async function UploadProductImage(request, response){
+    try{
+        if(!request.file) return response.status(400).json("No product image provided.")
+        let fileName = `${Date.now()}-${Math.round(Math.random()*1E9)}}.jpeg`
+        let output = `.src/public/uploads/products/${fileName}`
+    }catch(err){
+
+    }
+}
+
 export async function GetProduct(request, response) {
     try {
         await connection()
