@@ -35,7 +35,7 @@ export async function GetProduct(request, response) {
 export async function AddProduct(request, response) {
     try{
         if(!request.file) return response.status(400).json("No product image provided.")
-        let fileName = `${Date.now()}-${Math.round(Math.random()*1E9)}}.jpeg`
+        let fileName = `${Date.now()}-${Math.round(Math.random()*1E9)}.jpeg`
         let output = `.src/public/uploads/products/${fileName}`
         await sharp(request.file.buffer).jpeg({ quality: 60 }).toFile(output)
         await connection()
