@@ -4,6 +4,15 @@ import { connection, disconnection } from "./db.js"
 
 const storage = memoryStorage()
 
+function fileFilter(request, file, cb){
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
+    if(allowedTypes.includes(file.mimetype)){
+        cb(null, true)
+    }else{
+        cb(new Error("File type not allowed."), false)
+    }
+}
+
 export async function GetProduct(request, response) {
     try {
         await connection()
