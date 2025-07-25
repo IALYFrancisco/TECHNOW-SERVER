@@ -1,4 +1,4 @@
-import { memoryStorage } from "multer"
+import multer, { memoryStorage } from "multer"
 import { Product } from "../models/Product.js"
 import { connection, disconnection } from "./db.js"
 
@@ -12,6 +12,12 @@ function fileFilter(request, file, cb){
         cb(new Error("File type not allowed."), false)
     }
 }
+
+const Upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 15 * 1024 * 1024 }
+})
 
 export async function GetProduct(request, response) {
     try {
