@@ -36,7 +36,7 @@ export async function AddProduct(request, response) {
     try{
         if(!request.file) return response.status(400).json("No product image provided.")
         let fileName = `${Date.now()}-${Math.round(Math.random()*1E9)}.jpeg`
-        let output = `.src/public/uploads/products/${fileName}`
+        let output = `./src/public/uploads/images/products/${fileName}`
         await sharp(request.file.buffer).jpeg({ quality: 60 }).toFile(output)
         await connection()
         let newProduct = Product(request.body)
@@ -44,7 +44,7 @@ export async function AddProduct(request, response) {
         await newProduct.save()
         response.status(201).json({
             message: "Product added successfully.",
-            image: `${process.env.APP_ADDRESS}/uploads/profiles/${fileName}`
+            image: `${process.env.APP_ADDRESS}/uploads/images/products/${fileName}`
         })
     }catch(err){
         response.status(500).json({
