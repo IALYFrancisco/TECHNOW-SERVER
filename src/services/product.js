@@ -1,5 +1,8 @@
+import { memoryStorage } from "multer"
 import { Product } from "../models/Product.js"
 import { connection, disconnection } from "./db.js"
+
+const storage = memoryStorage()
 
 export async function GetProduct(request, response) {
     try {
