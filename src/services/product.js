@@ -38,7 +38,7 @@ export async function AddProduct(request, response) {
         let fileName = `${Date.now()}-${Math.round(Math.random()*1E9)}.jpeg`
         await connection()
         let newProduct = Product(request.body)
-        newProduct.image = `uploads/products/${fileName}`
+        newProduct.image = `uploads/images/products/${fileName}`
         let result = await newProduct.save()
         if(result){
             let output = `./src/public/uploads/images/products/${fileName}`
