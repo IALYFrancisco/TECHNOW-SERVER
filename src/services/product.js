@@ -23,6 +23,9 @@ export const Upload = multer({
 export async function GetProduct(request, response) {
     try {
         await connection()
+        if(request.body._id){
+            let product = await Product.findOneById(request.body._id)
+        }
         let product = await Product.find()
         response.status(200).json(product)
     }catch(err){
