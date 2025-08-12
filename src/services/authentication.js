@@ -36,7 +36,7 @@ export async function Login(request, response) {
     try {
         await connection()
         let { email, password } = request.body
-        let _user = await User.findOne({ email: email })
+        let _user = await User.findOne({ email: email }, {register_date: 0})
         if(!_user || !await ComparePassword(password, _user.password)){
             return response.status(204).end()
         }
