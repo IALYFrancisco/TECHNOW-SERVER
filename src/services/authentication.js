@@ -36,14 +36,12 @@ export async function Login(request, response) {
     try {
         await connection()
         let { email, password } = request.body
-        let _user = await User.findOne({ email: email }, {register_date: 0})
-        if(!_user || !await ComparePassword(password, _user.password)){
+        let user = await User.findOne({ email: email }, {register_date: 0, __v: 0})
+        if(!user || !await ComparePassword(password, user.password)){
             return response.status(204).end()
         }
-        
-        let newAccessToken = await GenerateAccessToken(_user._id)
-        let newRefreshToken = await GenerateRefreshToken(_user._id)
-
+        let newAccessToken = await GenerateAccessToken(user._id)
+        let newRefreshToken = await GenerateRefreshToken(user._id)
         response.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
             secure: JSON.parse(process.env.APP_ENV),
@@ -51,12 +49,10 @@ export async function Login(request, response) {
             maxAge: 7 * 24 * 60 * 60 * 1000,
             path: '/'
         })
-
         response.status(200).json({
             accessToken: newAccessToken,
-            user: _user
+            user: user
         })
-
     }catch(err){
         response.status(500).json({
             message: "Error user login",
