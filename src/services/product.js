@@ -24,10 +24,10 @@ export async function GetProduct(request, response) {
     try {
         await connection()
         if(request.query._id){
-            let product = await Product.findById(request.query._id)
+            let product = await Product.findById(request.query._id, { __v: 0 })
             response.status(200).json(product)
         }else{
-            let product = await Product.find()
+            let product = await Product.find({}, { __v: 0})
             response.status(200).json(product)
         }
     }catch(err){
