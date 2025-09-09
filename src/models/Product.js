@@ -4,7 +4,7 @@ const productSchema = new Schema({
     category: { type: String, required: true},
     mark: { type:String, required: true},
     model: { type:String, required: true},
-    unite_price: { type:String, required:true },
+    unite_price: { type: Number, required:true },
     color: { type:String, required:true},
     description: { type:String, required:true},
     stock: { type:String, required: true},
